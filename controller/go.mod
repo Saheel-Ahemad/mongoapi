@@ -1,9 +1,8 @@
-module github.com/Saheel-Ahemad/mongoapi/tree/main/controller
+module github.com/Saheel-Ahemad/mongoapi/controller
 
 go 1.24.1
 
 require (
-	github.com/Saheel-Ahemad/mongoapi/model v0.0.0-20250328111021-4c27c3ef1b8d
 	github.com/gorilla/mux v1.8.1
 	go.mongodb.org/mongo-driver v1.17.3
 )

@@ -1,4 +1,4 @@
-module github.com/Saheel-Ahemad/mongoapi/tree/main/router
+module github.com/Saheel-Ahemad/mongoapi/router
 
 go 1.24.1
 

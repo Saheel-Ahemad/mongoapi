@@ -1,4 +1,4 @@
-module github.com/Saheel-Ahemad/mongoapi/tree/main/model
+module github.com/Saheel-Ahemad/mongoapi/model
 
 go 1.24.1
 
