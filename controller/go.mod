@@ -1,4 +1,4 @@
-module githib.com/Saheel-Ahemad/mongoapi/controller
+module github.com/Saheel-Ahemad/mongoapi/controller
 
 go 1.24.1
 
