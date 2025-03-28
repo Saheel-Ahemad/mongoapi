@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Saheel-Ahemad/mongoapi/model"
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -130,7 +129,7 @@ func CreateMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoder")
 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
-	var movie model.Netflix
+	var movie string
 	_ = json.NewDecoder(r.Body).Decode(&movie)
 	insertOneMovie(movie)
 	json.NewEncoder(w).Encode(movie)
