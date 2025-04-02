@@ -4,7 +4,8 @@
 // 4. Check for mongo connection with the created client options
 // 5. Log error if any
 // 6. Access the collection by passing database name and collection name
-package controller
+
+package main
 
 import (
 	"context"
@@ -21,20 +22,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const connectionString = "mongodb://localhost:12345"
+// Connection string
+const connectionString = "mongodb://localhost:27017"
+
 const dbName = "netflix"
 const collectionName = "watchlist"
 
-// Most important for connection
+// Global variable for collection reference
 var collection *mongo.Collection
 
-// Connect with mongodb
+// Initialize MongoDB connection
 func init() {
 	// Create a context with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Set client options
+	// Set MongoDB client options
 	clientOptions := options.Client().ApplyURI(connectionString)
 
 	// Connect to MongoDB
@@ -43,7 +46,7 @@ func init() {
 		log.Fatal("Failed to connect to MongoDB:", err)
 	}
 
-	// Ping the database to verify connection
+	// Ping MongoDB to verify the connection
 	err = client.Ping(ctx, nil)
 	if err != nil {
 		log.Fatal("Failed to ping MongoDB:", err)
@@ -54,6 +57,57 @@ func init() {
 
 	log.Println("Successfully connected to MongoDB!")
 }
+
+// package controller
+
+// import (
+// 	"context"
+// 	"encoding/json"
+// 	"fmt"
+// 	"log"
+// 	"net/http"
+// 	"time"
+
+// 	"github.com/gorilla/mux"
+// 	"go.mongodb.org/mongo-driver/bson"
+// 	"go.mongodb.org/mongo-driver/bson/primitive"
+// 	"go.mongodb.org/mongo-driver/mongo"
+// 	"go.mongodb.org/mongo-driver/mongo/options"
+// )
+
+// const connectionString = "mongodb://localhost:27017"
+// const dbName = "netflix"
+// const collectionName = "watchlist"
+
+// // Most important for connection
+// var collection *mongo.Collection
+
+// // Connect with mongodb
+// func init() {
+// 	// Create a context with timeout
+// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+// 	defer cancel()
+
+// 	// Set client options
+// 	clientOptions := options.Client().ApplyURI(connectionString)
+
+// 	// Connect to MongoDB
+// 	client, err := mongo.Connect(ctx, clientOptions)
+// 	if err != nil {
+// 		log.Fatal("Failed to connect to MongoDB:", err)
+// 	}
+
+// 	// Ping the database to verify connection
+// 	err = client.Ping(ctx, nil)
+// 	if err != nil {
+// 		log.Fatal("Failed to ping MongoDB:", err)
+// 	}
+
+// 	// Get collection reference
+// 	collection = client.Database(dbName).Collection(collectionName)
+
+// 	log.Println("Successfully connected to MongoDB!")
+// }
 
 // Mongodb helpers
 
