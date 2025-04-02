@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"log"
+	//	"log"
+	"mongoapi/router"
 	"net/http"
-
-	"github.com/Saheel-Ahemad/mongoapi/router"
 )
 
 func main() {
 	fmt.Println("MongoDB API")
 	r := router.Router()
 	fmt.Println("Server is getting started...")
-	log.Fatal(http.ListenAndServe(":27017", r))
-	fmt.Println("Listening at port 27017 ...")
+	//	log.Fatal(http.ListenAndServe(":27017", r))
+	http.ListenAndServe(":8080", r)
+	fmt.Println("Listening at port 8080 ...")
 }

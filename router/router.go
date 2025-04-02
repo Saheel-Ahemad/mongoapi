@@ -1,7 +1,8 @@
 package router
 
 import (
-	"github.com/Saheel-Ahemad/mongoapi/controller"
+	"mongoapi/controller"
+
 	"github.com/gorilla/mux"
 )
 

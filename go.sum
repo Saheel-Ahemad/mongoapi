@@ -1,7 +1,3 @@
-github.com/Saheel-Ahemad/mongoapi/controller v0.0.0-20250328115629-3144e1e835cb h1:LFzhcSnkgvW5ylXsOYoUEcqu9hgCGhkID5rlNJaS1nQ=
-github.com/Saheel-Ahemad/mongoapi/controller v0.0.0-20250328115629-3144e1e835cb/go.mod h1:oMnlzyQbq++d2OGWLbJshr8Ii+agrMXxtHfah0rc5z0=
-github.com/Saheel-Ahemad/mongoapi/router v0.0.0-20250328115629-3144e1e835cb h1:2mZlUELO4uCkb92z0GC4OPuQcp7Fd4mQ/CTb3UFiHG4=
-github.com/Saheel-Ahemad/mongoapi/router v0.0.0-20250328115629-3144e1e835cb/go.mod h1:6dBk+unMY5BLbfaNWzh28bmp1nUe8od7KnwggcVHZc8=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/golang/snappy v0.0.4 h1:yAGX7huGHXlcLOEtBnF4w7FQwA26wojNCwOYAEhLjQM=

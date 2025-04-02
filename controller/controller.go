@@ -5,7 +5,7 @@
 // 5. Log error if any
 // 6. Access the collection by passing database name and collection name
 
-package main
+package controller
 
 import (
 	"context"
@@ -40,7 +40,7 @@ func init() {
 	// Set MongoDB client options
 	clientOptions := options.Client().ApplyURI(connectionString)
 
-	// Connect to MongoDB
+	// Connect to MongoDB`
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal("Failed to connect to MongoDB:", err)
