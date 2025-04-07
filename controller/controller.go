@@ -12,10 +12,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"mongoapi/model"
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
+	// "github.com/gorilla/mux"
+	// "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -23,8 +25,7 @@ import (
 )
 
 // Connection string
-const connectionString = "mongodb://localhost:27017"
-
+// const connectionString = "mongodb://localhost:27017"
 const dbName = "netflix"
 const collectionName = "watchlist"
 
@@ -38,7 +39,7 @@ func init() {
 	defer cancel()
 
 	// Set MongoDB client options
-	clientOptions := options.Client().ApplyURI(connectionString)
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
 	// Connect to MongoDB`
 	client, err := mongo.Connect(ctx, clientOptions)
@@ -58,104 +59,96 @@ func init() {
 	log.Println("Successfully connected to MongoDB!")
 }
 
-// package controller
+// Home function to handle the root route
+func Home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprintln(w, "<h1>Welcome to my Netflix API</h1>")
+}
 
-// import (
-// 	"context"
-// 	"encoding/json"
-// 	"fmt"
-// 	"log"
-// 	"net/http"
-// 	"time"
+// Movie struct to represent a movie document in MongoDB
+type Movie struct {
+	Title    string
+	Watched  bool
+	Released int
+}
 
-// 	"github.com/gorilla/mux"
-// 	"go.mongodb.org/mongo-driver/bson"
-// 	"go.mongodb.org/mongo-driver/bson/primitive"
-// 	"go.mongodb.org/mongo-driver/mongo"
-// 	"go.mongodb.org/mongo-driver/mongo/options"
-// )
-
-// const connectionString = "mongodb://localhost:27017"
-// const dbName = "netflix"
-// const collectionName = "watchlist"
-
-// // Most important for connection
-// var collection *mongo.Collection
-
-// // Connect with mongodb
-// func init() {
-// 	// Create a context with timeout
-// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-// 	defer cancel()
-
-// 	// Set client options
-// 	clientOptions := options.Client().ApplyURI(connectionString)
-
-// 	// Connect to MongoDB
-// 	client, err := mongo.Connect(ctx, clientOptions)
-// 	if err != nil {
-// 		log.Fatal("Failed to connect to MongoDB:", err)
-// 	}
-
-// 	// Ping the database to verify connection
-// 	err = client.Ping(ctx, nil)
-// 	if err != nil {
-// 		log.Fatal("Failed to ping MongoDB:", err)
-// 	}
-
-// 	// Get collection reference
-// 	collection = client.Database(dbName).Collection(collectionName)
-
-// 	log.Println("Successfully connected to MongoDB!")
-// }
-
-// Mongodb helpers
-
-func insertOneMovie(movie string) {
+// Function to insert a movie into the database
+func InsertInterstellar(w http.ResponseWriter, r *http.Request) {
+	movie := model.Netflix{
+		ID:      primitive.NewObjectID(),
+		Movie:   "Interstellar",
+		Watched: false,
+	}
 	insertedMovie, err := collection.InsertOne(context.Background(), movie)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprintln(w, "<h1>Something has went wrong</h1>")
+		return
 	}
-	fmt.Println("Inserted 1 movie to the database with id", insertedMovie.InsertedID)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message": "Interstellar Movie inserted successfully!",
+		"id":      insertedMovie.InsertedID,
+	})
+
+	// w.Header().Set("Content-Type", "text/html")
+	// fmt.Fprintln(w, "<h1>Interstellar</h1>")
 }
 
-// Updation of the record
-func updateOneMovie(movieId string) {
-	id, _ := primitive.ObjectIDFromHex(movieId)
-	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"Watched": true}}
+// // Updation of the record
+// func updateOneMovie(movieId string) {
+// 	id, _ := primitive.ObjectIDFromHex(movieId)
+// 	filter := bson.M{"_id": id}
+// 	update := bson.M{"$set": bson.M{"Watched": true}}
 
-	result, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Modified count", result.ModifiedCount)
-}
+// 	result, err := collection.UpdateOne(context.Background(), filter, update)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	fmt.Println("Modified count", result.ModifiedCount)
+// }
 
-// Deletion one of the record
-func deleteOneMovie(movieId string) {
-	id, _ := primitive.ObjectIDFromHex(movieId)
-	filter := bson.M{"id": id}
-	deleteCount, err := collection.DeleteOne(context.Background(), filter)
+// // Deletion one of the record
+// func deleteOneMovie(movieId string) {
+// 	id, _ := primitive.ObjectIDFromHex(movieId)
+// 	filter := bson.M{"id": id}
+// 	deleteCount, err := collection.DeleteOne(context.Background(), filter)
 
-	if err != nil {
-		log.Fatal()
-	}
-	fmt.Println("Deleted record", deleteCount)
-}
+// 	if err != nil {
+// 		log.Fatal()
+// 	}
+// 	fmt.Println("Deleted record", deleteCount)
+// }
 
-// Deletion all records from mongodb
-func deleteAllMovie() int64 {
-	deleteCount, err := collection.DeleteMany(context.Background(), bson.D{{}}, nil)
-	if err != nil {
-		log.Fatal()
-	}
-	fmt.Println("The number of movies deleted", deleteCount.DeletedCount)
-	return deleteCount.DeletedCount
-}
+// // Deletion all records from mongodb
+// func deleteAllMovie() int64 {
+// 	deleteCount, err := collection.DeleteMany(context.Background(), bson.D{{}}, nil)
+// 	if err != nil {
+// 		log.Fatal()
+// 	}
+// 	fmt.Println("The number of movies deleted", deleteCount.DeletedCount)
+// 	return deleteCount.DeletedCount
+// }
+
+// Primitive datatype stores the slice of maps
+//	{
+//	  {
+//		"_id": "ObjectID",
+//		"title": "Interstellar",
+//		"watched": true,
+//		"released": 2014
+//	  }
+//	  {
+//		"_id": "ObjectID2",
+//		"title": "Inception",
+//		"watched": false,
+//		"released": 2010
+//	  }
+//	}
 
 // Get all movies from mongodb
-func getAllMovies() []primitive.M {
+func GetAllMovies() []primitive.M {
 	cursor, err := collection.Find(context.Background(), bson.D{{}})
 	if err != nil {
 		log.Fatal()
@@ -173,44 +166,52 @@ func getAllMovies() []primitive.M {
 	return movies
 }
 
+// Retrive all movies data
+// Usage of x-www-form-urlencoder due to accepting the data in the form of key value pair
+
 func GetMyAllMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoder")
-	allMovies := getAllMovies()
+	allMovies := GetAllMovies()
 	json.NewEncoder(w).Encode(allMovies)
 }
 
-func CreateMovie(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoder")
-	w.Header().Set("Allow-Control-Allow-Methods", "POST")
+// // Create a single movie
+// func CreateMovie(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/x-www-form-urlencoder")
+// 	w.Header().Set("Allow-Control-Allow-Methods", "POST")
 
-	var movie string
-	_ = json.NewDecoder(r.Body).Decode(&movie)
-	insertOneMovie(movie)
-	json.NewEncoder(w).Encode(movie)
-}
+// 	var movie Movie
+// 	_ = json.NewDecoder(r.Body).Decode(&movie)
+// 	// insertOneMovie(movie)
+// 	json.NewEncoder(w).Encode(movie)
+// }
 
-func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoder")
-	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
+// // Mark a movie as watched
+// func MarkAsWatched(w http.ResponseWriter, r *http.Request) {
+// 	// var movie Movie
+// 	// insertOneMovie(movie)
+// 	w.Header().Set("Allow-Control-Allow-Methods", "PUT")
 
-	params := mux.Vars(r)
-	updateOneMovie(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
-}
+// 	params := mux.Vars(r)
+// 	updateOneMovie(params["id"])
+// 	json.NewEncoder(w).Encode(params["id"])
+// }
 
-func DeleteAMovie(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencode")
-	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
+// // Delete a movie from record
+// func DeleteAMovie(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/x-www-form-urlencode")
+// 	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
 
-	params := mux.Vars(r)
-	deleteOneMovie(params["id"])
-	json.NewEncoder(w).Encode(params["id"])
-}
+// 	params := mux.Vars(r)
+// 	deleteOneMovie(params["id"])
+// 	json.NewEncoder(w).Encode(params["id"])
+// }
 
-func DeleteAllMovies(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoder")
-	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
+// // Delete all movies from record
+// func DeleteAllMovies(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "application/x-www-form-urlencoder")
+// 	w.Header().Set("Allow-Control-Allow-Methods", "DELETE")
 
-	count := deleteAllMovie()
-	json.NewEncoder(w).Encode(count)
-}
+// 	count := deleteAllMovie()
+// 	json.NewEncoder(w).Encode(count)
+// }
