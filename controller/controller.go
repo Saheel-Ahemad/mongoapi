@@ -93,15 +93,15 @@ func InsertInterstellar(w http.ResponseWriter, r *http.Request) {
 		"id":      insertedMovie.InsertedID,
 	})
 
-	// w.Header().Set("Content-Type", "text/html")
-	// fmt.Fprintln(w, "<h1>Interstellar</h1>")
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprintln(w, "<h1>Interstellar</h1>")
 }
 
 // Updation of the record
 func updateOneMovie(movieId string) {
 	id, _ := primitive.ObjectIDFromHex(movieId)
 	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"Watched": true}}
+	update := bson.M{"$set": bson.M{"watched": true}}
 
 	fmt.Println("Update statement")
 
